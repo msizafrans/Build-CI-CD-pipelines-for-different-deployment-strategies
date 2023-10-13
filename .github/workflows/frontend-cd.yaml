@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - main
+      - master
     paths:
       - "frontend/**"
 
@@ -167,7 +167,7 @@ jobs:
 
       - name: Authenticate with Kubernetes cluster
         run: |
-          kubectl config use-context cluster
+          kubectl config set-context cluster --kubeconfig=$HOME/.kube/config
 
       - name: Apply Kubernetes resources
         run: |
