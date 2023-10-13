@@ -46,7 +46,7 @@ jobs:
 
       - name: Run lint
         run: |
-          pipenv run flake8
+          pipenv run lint
 
   test:
     runs-on: ubuntu-latest
