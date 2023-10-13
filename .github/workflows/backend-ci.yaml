@@ -42,11 +42,15 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pipenv install
+          pipenv install --dev
+
+      - name: Install flake8
+        run: |
+          pipenv install flake8
 
       - name: Run lint
         run: |
-          pipenv run lint
+          pipenv run flake8
 
   test:
     runs-on: ubuntu-latest
