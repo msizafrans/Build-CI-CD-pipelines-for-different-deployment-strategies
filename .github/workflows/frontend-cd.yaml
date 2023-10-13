@@ -162,7 +162,7 @@ jobs:
 
       - name: Set Docker image in Kustomize
         run: |
-          kustomize edit set image frontend=${CONTAINER_FE_RELEASE_IMAGE}
+          kustomize edit set image frontend=${CONTAINER_FE_RELEASE_IMAGE}:${{ github.sha }}
         working-directory: ./frontend/k8s
 
       - name: Apply Kubernetes resources
