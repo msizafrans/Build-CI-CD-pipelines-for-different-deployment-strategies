@@ -165,6 +165,10 @@ jobs:
           kustomize edit set image frontend=${CONTAINER_FE_RELEASE_IMAGE}:${{ github.sha }}
         working-directory: ./frontend/k8s
 
+      - name: Authenticate with Kubernetes cluster
+        run: |
+          kubectl config use-context cluster
+
       - name: Apply Kubernetes resources
         run: |
           kustomize build | kubectl apply -f -
