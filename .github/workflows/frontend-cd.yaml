@@ -151,16 +151,16 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Grant Permission to init.sh script
+      - name: Grant execute permission to the script
         run:  |
-          chmod +x init.sh 
+          chmod +x init.sh
         working-directory: ./setup
 
       - name: Run init.sh
         run:  |
           ./init.sh || true
         working-directory: ./setup
-        
+
       - name: Update kubeconfig
         run: |
           aws eks update-kubeconfig --name cluster --region us-east-1
