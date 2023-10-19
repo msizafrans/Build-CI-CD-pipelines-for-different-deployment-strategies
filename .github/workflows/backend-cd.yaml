@@ -149,12 +149,12 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Update kubeconfig
-        run: aws eks update-kubeconfig --name cluster
-
       - name: Run init.sh
         run: ./init.sh || true
-        working-directory: ./setup
+        working-directory: ./setup      
+
+      - name: Update kubeconfig
+        run: aws eks update-kubeconfig --name cluster
 
       - name: Set Docker image in Kustomize
         run: kustomize edit set image backend=${CONTAINER_BE_RELEASE_IMAGE}
@@ -163,5 +163,3 @@ jobs:
       - name: Apply Kubernetes resources
         run: kustomize build | kubectl apply -f -
         working-directory: ./backend/k8s
-
-    
