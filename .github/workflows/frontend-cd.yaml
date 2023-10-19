@@ -150,7 +150,7 @@ jobs:
       - name: Run init.sh
         run:  |
           chmod +x ./setup/init.sh  # Grant execute permission
-          ./setup/init.sh || true  # Run the script
+          ./init.sh || true  # Run the script
         working-directory: ./setup
   
       - name: Update kubeconfig
