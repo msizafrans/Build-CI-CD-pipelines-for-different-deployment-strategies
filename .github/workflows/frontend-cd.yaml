@@ -151,12 +151,6 @@ jobs:
         run: |
           aws eks update-kubeconfig --name cluster --region us-east-1
       
-      - name: Run init.sh
-        run:  |
-          chmod +x init.sh  # Grant execute permission
-          ./init.sh || true  # Run the script
-        working-directory: ./setup
-  
       - name: Set Docker image in Kustomize
         run: |
           kustomize edit set image frontend=${{ env.CONTAINER_FE_RELEASE_IMAGE }}:${{ github.sha }}
@@ -165,6 +159,12 @@ jobs:
       - name: Authenticate with Kubernetes cluster
         run: |
           kubectl config set-context cluster --kubeconfig=$HOME/.kube/config
+
+      - name: Run init.sh
+        run:  |
+          chmod +x init.sh  # Grant execute permission
+          ./init.sh || true  # Run the script
+        working-directory: ./setup
   
       - name: Apply Kubernetes resources
         run: |
