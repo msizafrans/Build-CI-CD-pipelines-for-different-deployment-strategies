@@ -146,16 +146,16 @@ jobs:
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
-  
+
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig --name cluster --region us-east-1
+      
       - name: Run init.sh
         run:  |
           chmod +x init.sh  # Grant execute permission
           ./init.sh || true  # Run the script
         working-directory: ./setup
-  
-      - name: Update kubeconfig
-        run: |
-          aws eks update-kubeconfig --name cluster --region us-east-1
   
       - name: Set Docker image in Kustomize
         run: |
