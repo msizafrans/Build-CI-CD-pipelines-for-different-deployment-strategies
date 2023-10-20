@@ -156,7 +156,7 @@ jobs:
         run: |
           aws eks update-kubeconfig --name cluster --region us-east-1
           kubectl config use-context arn:aws:eks:us-east-1:952272982413:cluster/cluster
-          kubectl get svc
+          eksctl version
         
       - name: Run init.sh
         run:  |
