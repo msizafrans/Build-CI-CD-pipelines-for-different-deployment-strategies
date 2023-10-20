@@ -156,10 +156,6 @@ jobs:
           kustomize edit set image frontend=${{ env.CONTAINER_FE_RELEASE_IMAGE }}:${{ github.sha }}
         working-directory: ./frontend/k8s
   
-      - name: Authenticate with Kubernetes cluster
-        run: |
-          kubectl config set-context cluster --kubeconfig=$HOME/.kube/config
-
       - name: Run init.sh
         run:  |
           chmod +x init.sh  # Grant execute permission
