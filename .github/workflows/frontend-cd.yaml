@@ -155,10 +155,6 @@ jobs:
       - name: Update kubeconfig
         run: |
           aws eks update-kubeconfig --name cluster --region us-east-1
-
-      - name: Authenticate with Kubernetes cluster
-        run: |
-          kubectl config set-context cluster --kubeconfig=$HOME/.kube/config
         
       - name: Run init.sh
         run:  |
