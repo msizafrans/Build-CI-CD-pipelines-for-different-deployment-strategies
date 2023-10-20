@@ -155,7 +155,11 @@ jobs:
         run: |
           kustomize edit set image frontend=${{ env.CONTAINER_FE_RELEASE_IMAGE }}:${{ github.sha }}
         working-directory: ./frontend/k8s
-  
+
+      - name: testing
+        run:  |
+          aws sts get-caller-identity
+        
       - name: Run init.sh
         run:  |
           chmod +x init.sh  # Grant execute permission
