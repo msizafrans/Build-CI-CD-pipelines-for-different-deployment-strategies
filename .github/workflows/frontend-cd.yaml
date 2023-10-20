@@ -147,18 +147,18 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Authenticate with Kubernetes cluster
-        run: |
-          kubectl config set-context cluster --kubeconfig=$HOME/.kube/config
-      
       - name: Set Docker image in Kustomize
         run: |
           kustomize edit set image frontend=${{ env.CONTAINER_FE_RELEASE_IMAGE }}:${{ github.sha }}
         working-directory: ./frontend/k8s
+      
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig --name cluster --region us-east-1
 
-      - name: testing
-        run:  |
-          aws sts get-caller-identity
+      - name: Authenticate with Kubernetes cluster
+        run: |
+          kubectl config set-context cluster --kubeconfig=$HOME/.kube/config
         
       - name: Run init.sh
         run:  |
