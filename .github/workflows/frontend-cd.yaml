@@ -155,10 +155,7 @@ jobs:
       - name: Update kubeconfig
         run: |
           aws eks update-kubeconfig --name cluster --region us-east-1
-
-      - name: get-contexts
-        run: |
-          kubectl config get-contexts
+          kubectl config use-context cluster
         
       - name: Run init.sh
         run:  |
