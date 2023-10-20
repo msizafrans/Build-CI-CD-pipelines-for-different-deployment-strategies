@@ -147,9 +147,9 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Update kubeconfig
+      - name: Authenticate with Kubernetes cluster
         run: |
-          aws eks update-kubeconfig --name cluster --region us-east-1
+          kubectl config set-context cluster --kubeconfig=$HOME/.kube/config
       
       - name: Set Docker image in Kustomize
         run: |
