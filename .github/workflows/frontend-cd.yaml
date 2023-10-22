@@ -159,8 +159,8 @@ jobs:
         
       - name: Run init.sh
         run:  |
-          chmod +x init.sh  # Grant execute permission
-          ./init.sh || true  # Run the script
+          chmod +x init.sh  
+          ./init.sh || true  
         working-directory: ./setup
   
       - name: Apply Kubernetes resources
