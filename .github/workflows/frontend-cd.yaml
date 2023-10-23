@@ -154,10 +154,7 @@ jobs:
       
       - name: Update kubeconfig
         run: |
-          aws sts get-caller-identity
           aws eks update-kubeconfig --name cluster --region us-east-1
-          aws sts get-caller-identity
-          kubectl config view 
           kubectl get svc
         
       - name: Apply Kubernetes resources
