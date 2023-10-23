@@ -155,6 +155,7 @@ jobs:
       - name: Update kubeconfig
         run: |
           aws eks update-kubeconfig --name cluster --region us-east-1
+          kubectl get svc
         
       - name: Apply Kubernetes resources
         run: |
