@@ -101,23 +101,25 @@ jobs:
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
+        with:
+          registry: 952272982413.dkr.ecr.us-east-1.amazonaws.com/frontend
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_ECR }}
+          aws-secret-access-key: ${{ secrets.AWS_ACCESS_KEY_ID_ECR }}
+          aws-region: us-east-1
 
       - uses: actions/checkout@v2
 
-      - name: Set environment variable
-        run: |
-          SHORT_SHA_COMMIT=$(git rev-parse --short HEAD)
-          echo CONTAINER_FE_RELEASE_IMAGE=${{ steps.login-ecr.outputs.registry }}/frontend:${SHORT_SHA_COMMIT} >> $GITHUB_ENV
-
-      - name: Build, tag, and push image to Amazon ECR
+      - name: Build, Tag, and Push to Amazon ECR
         id: build-image
         run: |
           echo "Get backend external ip address"
           aws eks update-kubeconfig --name cluster
-          export EXTERNALIP=$(kubectl get svc backend -o=jsonpath='{.status.loadBalancer.ingress[0].hostname}{"\n"}{.status.loadBalancer.ingress[0].ip}')
+          export EXTERNALIP=$(kubectl get svc frontend -o=jsonpath='{.status.loadBalancer.ingress[0].hostname}{"\n"}{.status.loadBalancer.ingress[0].ip}')
           echo $EXTERNALIP
           echo "Build a docker container and push it to ECR"
-          docker build -t ${{ env.CONTAINER_FE_RELEASE_IMAGE }} --build-arg=REACT_APP_MOVIE_API_URL=http://$EXTERNALIP .
+          docker build --build-arg=REACT_APP_MOVIE_API_URL=http://localhost:5000 --tag=mp-frontend:latest .
+          docker run --name mp-frontend -p 3000:3000 -d mp-frontend
+          docker push 952272982413.dkr.ecr.us-east-1.amazonaws.com/mp-frontend:latest
           echo "List Docker images"
           docker images
 
@@ -146,6 +148,11 @@ jobs:
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
+        with:
+          registry: 952272982413.dkr.ecr.us-east-1.amazonaws.com/frontend
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_ECR }}
+          aws-secret-access-key: ${{ secrets.AWS_ACCESS_KEY_ID_ECR }}
+          aws-region: us-east-1
 
       - name: Set Docker image in Kustomize
         run: |
