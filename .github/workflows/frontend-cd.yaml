@@ -157,12 +157,6 @@ jobs:
           aws eks update-kubeconfig --name cluster --region us-east-1
           kubectl config use-context arn:aws:eks:us-east-1:952272982413:cluster/cluster
         
-      - name: Run init.sh
-        run:  |
-          chmod +x init.sh  
-          ./init.sh || true  
-        working-directory: ./setup
-  
       - name: Apply Kubernetes resources
         run: |
           kustomize build | kubectl apply -f -
