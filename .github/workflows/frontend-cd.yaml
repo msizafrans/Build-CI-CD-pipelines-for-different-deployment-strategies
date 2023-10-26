@@ -75,13 +75,11 @@ jobs:
         uses: actions/checkout@v3
   
       - name: Configure AWS credentials
-        env: 
-          PRODUCTION: production
         uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ vars.AWS_REGION }}
+          aws-region: us-east-1
           
   
       - name: Login to Amazon ECR
@@ -99,7 +97,7 @@ jobs:
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
       
       - name: Setup Authentication against EKS Cluster 
-        run: aws eks update-kubeconfig --name ${{ vars.EKS_CLUSTER_NAME }} --region ${{ vars.AWS_REGION }}
+        run: aws eks update-kubeconfig --name ${{ vars.EKS_CLUSTER_NAME }} --region us-east-1
   
       - name: Deploy the image to the cluster
         working-directory: frontend/k8s
