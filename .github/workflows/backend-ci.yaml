@@ -29,6 +29,9 @@ jobs:
         run: |
           pipenv install --dev
           pipenv install flake8
+
+      - name: Activating virtualenv
+        run: pipenv shell
           
       - name: Now Running Lint
         run: pipenv run lint
@@ -57,6 +60,9 @@ jobs:
         run: |
           pipenv install --dev
           pipenv install flake8
+
+      - name: Activating virtualenv
+        run: pipenv shell
   
       - name: Now Running Tests
         run: pipenv run test
