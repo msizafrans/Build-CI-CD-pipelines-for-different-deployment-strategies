@@ -102,6 +102,6 @@ jobs:
       - name: Deploy the image to the cluster
         working-directory: frontend/k8s
         run: |
-          kustomize edit set image frontend=${{ vars.FRONTEND_ECR }}/frontend:latest
+          kustomize edit set image frontend=952272982413.dkr.ecr.us-east-1.amazonaws.com/frontend:latest
           kustomize build | kubectl apply -f -
       
