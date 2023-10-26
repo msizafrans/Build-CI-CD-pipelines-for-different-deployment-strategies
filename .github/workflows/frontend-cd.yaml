@@ -98,7 +98,10 @@ jobs:
       
       - name: Setup Authentication against EKS Cluster 
         working-directory: frontend/k8s
-        run: aws eks update-kubeconfig --name cluster --region us-east-1
+        run: |
+          aws eks update-kubeconfig --name cluster --region us-east-1
+          export KUBECONFIG=/etc/kubernetes/admin.conf
+          echo 'export KUBECONFIG=/etc/kubernetes/admin.conf' >> $HOME/.bashrc
           
       - name: Deploy the image to the cluster
         env:
