@@ -101,6 +101,8 @@ jobs:
         run: aws eks update-kubeconfig --name cluster --region us-east-1
           
       - name: Deploy the image to the cluster
+        env:
+          KUBECONFIG: ~/.kube/config
         run: |
           cd k8s
           kustomize edit set image frontend=952272982413.dkr.ecr.us-east-1.amazonaws.com/frontend:latest
