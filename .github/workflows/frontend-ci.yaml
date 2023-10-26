@@ -4,7 +4,6 @@ on:
   pull_request:
     branches:
       - main
-
 jobs:
   lint:
     name: Linting
@@ -29,12 +28,10 @@ jobs:
           key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
         
       - name: Installing dependencies
-        run: |
-          npm ci
+        run: npm ci
 
       - name: Now Running Lint
-        run: |
-          npm run lint
+        run: npm run lint
 
   test:
     name: Testing
@@ -59,12 +56,10 @@ jobs:
           key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
         
       - name: Installing dependencies
-        run: |
-          npm ci
+        run: npm ci
 
       - name: Now Running Tests
-        run: |
-          run: npm run test
+        run: npm run test
 
   build:
     name: Building the Image
