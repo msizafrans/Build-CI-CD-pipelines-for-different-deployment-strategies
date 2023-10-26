@@ -62,7 +62,7 @@ jobs:
         run: npm run test
 
   build:
-    name: Building the Image
+    name: Check out the code and build the Image
     runs-on: ubuntu-latest
     needs: [lint,test]
     defaults:
