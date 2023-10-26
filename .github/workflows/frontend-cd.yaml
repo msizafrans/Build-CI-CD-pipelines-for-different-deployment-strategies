@@ -98,10 +98,8 @@ jobs:
       
       - name: Setup Authentication against EKS Cluster 
         working-directory: frontend/k8s
-        run: |
-          aws eks update-kubeconfig --name cluster --region us-east-1
-          kubectl get services -o wide
-  
+        run: aws eks update-kubeconfig --name cluster --region us-east-1
+          
       - name: Deploy the image to the cluster
         run: |
           cd k8s
