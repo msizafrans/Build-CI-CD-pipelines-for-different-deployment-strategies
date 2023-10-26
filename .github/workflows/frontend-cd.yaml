@@ -5,62 +5,64 @@ on:
   push:
     branches:
       - main
-lint:
-  name: Lint
-  runs-on: ubuntu-latest
-  defaults:
-    run:
-      working-directory: frontend
-  steps:
-    - name: Checking Out the code from Repo
-      uses: actions/checkout@v3
 
-    - name: Setting up NodeJS
-      uses: actions/setup-node@v3
-      with:
-        node-version: 16.16.0
-
-    - name: Cache before dependency install
-      id: CachingData
-      uses: actions/cache@v3
-      with:
-        path: ~/.npm
-        key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
-      
-    - name: Installing dependencies
-      run: npm ci
-
-    - name: Now Running Lint
-      run: npm run lint
-
-test:
-  name: Test
-  runs-on: ubuntu-latest
-  defaults:
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    defaults:
       run:
         working-directory: frontend
-  steps:
-    - name: Checking Out the code from Repo
-      uses: actions/checkout@v3
-    
-    - name: Setting up NodeJS
-      uses: actions/setup-node@v3
-      with:
+    steps:
+      - name: Checking Out the code from Repo
+        uses: actions/checkout@v3
+  
+      - name: Setting up NodeJS
+        uses: actions/setup-node@v3
+        with:
           node-version: 16.16.0
-    
-    - name: Cache before dependency install
-      id: CachingData
-      uses: actions/cache@v3
-      with:
+  
+      - name: Cache before dependency install
+        id: CachingData
+        uses: actions/cache@v3
+        with:
           path: ~/.npm
           key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
         
-    - name: Installing dependencies
-      run: npm ci
-    
-    - name: Now Running Tests
-      run: npm run test
-    
+      - name: Installing dependencies
+        run: npm ci
+  
+      - name: Now Running Lint
+        run: npm run lint
+  
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    defaults:
+        run:
+          working-directory: frontend
+    steps:
+      - name: Checking Out the code from Repo
+        uses: actions/checkout@v3
+      
+      - name: Setting up NodeJS
+        uses: actions/setup-node@v3
+        with:
+            node-version: 16.16.0
+      
+      - name: Cache before dependency install
+        id: CachingData
+        uses: actions/cache@v3
+        with:
+            path: ~/.npm
+            key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
+          
+      - name: Installing dependencies
+        run: npm ci
+      
+      - name: Now Running Tests
+        run: npm run test
+      
   build:
     name: Build
     runs-on: ubuntu-latest
@@ -85,17 +87,17 @@ test:
   
       - name: Build, tag, and push docker image to Amazon ECR
         env:
-        REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        REPOSITORY: frontend
-        IMAGE_TAG: ${{ github.sha }}
-        REACT_APP_MOVIE_API_URL: ${{ vars.REACT_APP_MOVIE_API_URL }}
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: frontend
+          IMAGE_TAG: ${{ github.sha }}
+          REACT_APP_MOVIE_API_URL: ${{ vars.REACT_APP_MOVIE_API_URL }}
         run: |
           docker build --build-arg=REACT_APP_MOVIE_API_URL="http://$REACT_APP_MOVIE_API_URL" -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
       
       - name: Setup Authentication against EKS Cluster 
         run: aws eks update-kubeconfig --name ${{ vars.EKS_CLUSTER_NAME }} --region ${{ vars.AWS_REGION }}
-
+  
       - name: Deploy the image to the cluster
         working-directory: frontend/k8s
         run: |
