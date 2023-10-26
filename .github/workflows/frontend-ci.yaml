@@ -6,7 +6,7 @@ on:
       - main
 jobs:
   lint:
-    name: Linting
+    name: Lint
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -34,7 +34,7 @@ jobs:
         run: npm run lint
 
   test:
-    name: Testing
+    name: Test
     runs-on: ubuntu-latest
     defaults:
       run:
