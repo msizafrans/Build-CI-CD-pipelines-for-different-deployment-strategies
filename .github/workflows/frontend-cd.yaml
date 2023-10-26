@@ -97,7 +97,6 @@ jobs:
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
       
       - name: Setup Authentication against EKS Cluster 
-        working-directory: frontend/k8s
         run: |
           aws eks update-kubeconfig --name cluster --region us-east-1
           
