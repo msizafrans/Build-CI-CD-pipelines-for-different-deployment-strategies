@@ -26,8 +26,10 @@ jobs:
           key: deps-python-${{ hashFiles('**/Pipfile.lock') }}
         
       - name: Installing dependencies
-        run: pipenv install 
-
+        run: |
+          pipenv install --dev
+          pipenv install flake8
+          
       - name: Now Running Lint
         run: pipenv run lint
 
@@ -50,10 +52,12 @@ jobs:
         with:
           path: ~/.local/share/virtualenvs
           key: deps-python-${{ hashFiles('**/Pipfile.lock') }}
-        
-      - name: Installing dependencies
-        run: pipenv install 
 
+      - name: Installing dependencies
+        run: |
+          pipenv install --dev
+          pipenv install flake8
+  
       - name: Now Running Tests
         run: pipenv run test
 
