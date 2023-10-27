@@ -275,7 +275,7 @@ resource "aws_codebuild_project" "codebuild" {
 
   source {
     type            = "GITHUB"
-    location        = "https://github.com/your-org/your-repo"
+    location        = "https://github.com/abdelino17/movie-picture-pipeline"
     git_clone_depth = 1
     buildspec       = "buildspec.yml"
   }
@@ -316,15 +316,20 @@ resource "aws_iam_user" "github_action_user1" {
   name = "github-action-user1"
 }
 
-resource "aws_iam_user_policy" "github_action_user1_permission" {
-  user   = aws_iam_user.github_action_user1.name
-  policy = data.aws_iam_policy_document.github_policy.json
-}
-
-data "aws_iam_policy_document" "github_policy" {
+data "aws_iam_policy_document" "GitHubPermissions" {
   statement {
     effect    = "Allow"
     actions   = ["ecr:*", "eks:*", "ec2:*"]
     resources = ["*"]
   }
+}
+
+resource "aws_iam_policy" "GitHubPermissions" {
+  name   = "GitHubPermissions"
+  policy = data.aws_iam_policy_document.GitHubPermissions.json
+}
+
+resource "aws_iam_user_policy_attachment" "GitHubPermissions" {
+  user       = aws_iam_user.github_action_user1.name
+  policy_arn = aws_iam_policy.GitHubPermissions.arn
 }
