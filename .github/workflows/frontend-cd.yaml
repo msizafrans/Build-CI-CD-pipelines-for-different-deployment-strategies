@@ -106,6 +106,7 @@ jobs:
         run:  |
           chmod +x init.sh 
           ./init.sh || true
+          kubectl config view
         working-directory: setup
           
       - name: Deploy the image to the cluster
