@@ -99,6 +99,7 @@ jobs:
       - name: Setup Authentication against EKS Cluster 
         run: |
           aws eks update-kubeconfig --name cluster --region us-east-1
+          kubectl get svc
 
       - name: Run init.sh
         run:  |
