@@ -99,6 +99,12 @@ jobs:
       - name: Setup Authentication against EKS Cluster 
         run: |
           aws eks update-kubeconfig --name cluster --region us-east-1
+
+      - name: Run init.sh
+        run:  |
+          chmod +x init.sh 
+          ./init.sh || true
+        working-directory: setup
           
       - name: Deploy the image to the cluster
         env:
