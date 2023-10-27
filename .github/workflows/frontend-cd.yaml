@@ -102,9 +102,9 @@ jobs:
           
       - name: Deploy the image to the cluster
         env:
-          KUBECONFIG: ~/.kube/config
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
           cd k8s
-          kustomize edit set image frontend=952272982413.dkr.ecr.us-east-1.amazonaws.com/frontend:latest
+          kustomize edit set image frontend=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/frontend:latest
           kustomize build | kubectl apply -f -
       
