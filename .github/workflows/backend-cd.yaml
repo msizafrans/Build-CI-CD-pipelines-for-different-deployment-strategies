@@ -1,165 +1,115 @@
 name: Backend Continuous Deployment
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - "backend/**"
-
+  ##push:
+    ##branches:
+      ##- main
 jobs:
   lint:
+    name: Lint
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./backend
-
+        working-directory: backend
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Use Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-
-      - name: Cache pipenv dependencies
-        id: cache-pip
-        uses: actions/cache@v3
-        env:
-          cache-name: cache-pip-dependencies
-        with:
-          path: ~/.cache/pipenv
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/Pipfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
-
-      - name: Install pipenv
-        run: |
-          pip install pipenv
-
-      - name: Install dependencies
-        run: |
-          pipenv install
-
-      - name: Run lint
-        run: |
-          pipenv run lint
-
-  test:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./backend
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Use Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-
-      - name: Cache pipenv dependencies
-        id: cache-pip
-        uses: actions/cache@v3
-        env:
-          cache-name: cache-pip-dependencies
-        with:
-          path: ~/.cache/pipenv
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/Pipfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
-
-      - name: Install pipenv
-        run: |
-          pip install pipenv
-
-      - name: Install dependencies
-        run: |
-          pipenv install
-
-      - name: Run tests
-        run: |
-          pipenv run test
-
-  build:
-    runs-on: ubuntu-latest
-    needs: [lint, test]
-    defaults:
-      run:
-        working-directory: ./backend
-
-    steps:
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_ECR }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_ECR }}
-          aws-region: us-east-1
-
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-
-      - uses: actions/checkout@v3
-      - name: Set environment variable
-        run: |
-          SHORT_SHA_COMMIT=$(git rev-parse --short HEAD)
-          echo CONTAINER_BE_RELEASE_IMAGE=${{ steps.login-ecr.outputs.registry }}/backend:${SHORT_SHA_COMMIT} >> $GITHUB_ENV
-
-      - name: Build, tag, and push image to Amazon ECR
-        id: build-image
-        run: |
-          echo "Build a docker container and push it to ECR"
-          docker build -t ${CONTAINER_BE_RELEASE_IMAGE} .
-          echo "List Docker images"
-          docker images
-          echo "Push Docker image to ECR"
-          docker push ${CONTAINER_BE_RELEASE_IMAGE}
-
-      - name: Cache Docker image
-        uses: actions/cache@v3
-        with:
-          path: ~/docker-cache
-          key: docker-${{ github.sha }}-frontend
-          restore-keys: |
-            docker-${{ github.sha }}-
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: [build]
-    steps:
-      - name: Checkout code
+      - name: Checking Out the code from Repo
         uses: actions/checkout@v3
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_ECR }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_ECR }}
-          aws-region: us-east-1
+      - name: Installing dependency manager pipenv
+        run: pip install pipenv
 
+      - name: Cache before dependency install
+        id: CachingData
+        uses: actions/cache@v3
+        with:
+          path: ~/.local/share/virtualenvs
+          key: deps-python-${{ hashFiles('**/Pipfile.lock') }}
+        
+      - name: Installing dependencies
+        run: |
+          pipenv install --dev
+          pipenv install flake8
+          
+      - name: Now Running Lint
+        run: pipenv run lint
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - name: Checking Out the code from Repo
+        uses: actions/checkout@v3
+
+      - name: Installing dependency manager pipenv
+        run: pip install pipenv
+
+      - name: Cache before dependency install
+        id: CachingData
+        uses: actions/cache@v3
+        with:
+          path: ~/.local/share/virtualenvs
+          key: deps-python-${{ hashFiles('**/Pipfile.lock') }}
+
+      - name: Installing dependencies
+        run: |
+          pipenv install --dev
+          pipenv install flake8
+  
+      - name: Now Running Tests
+        run: pipenv run test
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: [lint,test]
+    defaults:
+        run:
+          working-directory: backend
+    steps:
+      - name: Checking Out the code from Repo
+        uses: actions/checkout@v3
+  
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+          
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
+  
+      - name: Build, tag, and push docker image to Amazon ECR
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: backend
+          IMAGE_TAG: ${{ github.sha }}
+          REACT_APP_MOVIE_API_URL: ${{ vars.REACT_APP_MOVIE_API_URL }}
+        run: |
+          docker build --build-arg=REACT_APP_MOVIE_API_URL="http://$REACT_APP_MOVIE_API_URL" -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+      
+      - name: Setup Authentication against EKS Cluster 
+        run: |
+          aws eks update-kubeconfig --name cluster --region us-east-1
+          kubectl get svc
+          kubectl config view
 
       - name: Run init.sh
-        run: ./init.sh || true
-        working-directory: ./setup      
-
-      - name: Update kubeconfig
-        run: aws eks update-kubeconfig --name cluster
-
-      - name: Set Docker image in Kustomize
-        run: kustomize edit set image backend=${CONTAINER_BE_RELEASE_IMAGE}
-        working-directory: ./backend/k8s
-
-      - name: Apply Kubernetes resources
-        run: kustomize build | kubectl apply -f -
-        working-directory: ./backend/k8s
+        run:  |
+          chmod +x init.sh 
+          ./init.sh || true
+          kubectl config view
+        working-directory: setup
+          
+      - name: Deploy the image to the cluster
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        run: |
+          cd k8s
+          kustomize edit set image backend=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/backend:latest
+          kustomize build | kubectl apply -f -
