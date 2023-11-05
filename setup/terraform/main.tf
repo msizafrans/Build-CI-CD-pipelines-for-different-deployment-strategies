@@ -325,7 +325,7 @@ data "aws_iam_policy_document" "github_action_user1_permission" {
 }
 
 resource "aws_iam_policy" "github_action_user1_permission" {
-  user   = aws_iam_user.github_action_user1.name
+  name   = "github_action_user1_permission"
   policy = data.aws_iam_policy_document.github_action_user1_permission.json
 }
 
