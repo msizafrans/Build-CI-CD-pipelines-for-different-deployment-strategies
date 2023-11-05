@@ -321,7 +321,7 @@ resource "aws_iam_user_policy" "github_action_user1_permission" {
   policy = data.aws_iam_policy_document.github_policy.json
 }
 
-data "aws_iam_policy_document" "github_policy" {
+data "aws_iam_policy_document" "github_action_user1_permission" {
   statement {
     effect    = "Allow"
     actions   = ["ecr:*", "eks:*", "ec2:*"]
