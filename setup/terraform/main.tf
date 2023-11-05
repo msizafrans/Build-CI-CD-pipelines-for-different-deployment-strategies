@@ -316,15 +316,20 @@ resource "aws_iam_user" "github_action_user1" {
   name = "github-action-user1"
 }
 
-resource "aws_iam_user_policy" "github_action_user1_permission" {
-  user   = aws_iam_user.github_action_user1.name
-  policy = data.aws_iam_policy_document.github_action_user1_permission.json
-}
-
 data "aws_iam_policy_document" "github_action_user1_permission" {
   statement {
     effect    = "Allow"
     actions   = ["ecr:*", "eks:*", "ec2:*"]
     resources = ["*"]
   }
+}
+
+resource "aws_iam_user_policy" "github_action_user1_permission" {
+  user   = aws_iam_user.github_action_user1.name
+  policy = data.aws_iam_policy_document.github_action_user1_permission.json
+}
+
+resource "aws_iam_user_policy_attachment" "github_action_user1_permission" {
+  user       = aws_iam_user.github_action_user1.name
+  policy_arn = aws_iam_policy.github_action_user1_permission.arn
 }
