@@ -9,9 +9,9 @@ The team's project is comprised of 2 application.
 
 In the `starter` folder, you'll find 2 folders, one named `frontend` and one named `backend`, where each application's source code is maintained. Your job is to use the team's [existing documentation](./starter/frontend/frontend-development-notes) and create CI/CD pipelines to meet the teams' needs.
 
-## Deliverables
+# Deliverables
 
-### Frontend
+## Frontend
 
 1. A Continuous Integration workflow that:
    1. Runs on `pull_requests` against the `main` branch,only when code in the frontend application changes.
