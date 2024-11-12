@@ -406,7 +406,3 @@ kustomize edit set image backend=<ECR_REPO_URL>:<NEW_TAG_HERE>
 # Apply the manifests to the cluster
 kustomize build | kubectl apply -f -
 ```
-
-## License
-
-[License](LICENSE.md)
