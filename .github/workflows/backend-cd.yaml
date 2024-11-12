@@ -113,3 +113,4 @@ jobs:
           kustomize edit set image backend=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/backend:latest
           kustomize build | kubectl apply -f -
 Update README.md · msizafrans/Build-CI-CD-pipelines-for-different-deployment-strategies@764d856 
+
