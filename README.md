@@ -101,7 +101,7 @@ cd setup
 
 ## Dependencies
 
-We've provided the below list of dependencies to assist in the case you'd like to run any of the work locally. Local development issues, however, are not supported as we cannot control the environment as we can in the online workspace.
+Below is a list of dependencies to assist in the case you'd like to run any of the work locally. Local development issues, however, are not supported as we cannot control the environment as we can in the online workspace.
 
 All of the tools below will be available in the workspace
 
