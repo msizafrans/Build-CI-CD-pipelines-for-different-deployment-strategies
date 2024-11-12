@@ -1,4 +1,4 @@
-# Movie Picture Pipeline
+### Movie Picture Pipeline
 
 Project scenario is that you've been brought on as the DevOps resource for a development team that manages a web application that is a catalog of Movie Picture movies. They're in dire need of automating their development workflows in hopes of accelerating their release cycle. They'd like to use Github Actions to automate testing, building and deploying their applications to an existing Kubernetes cluster.
 
@@ -9,9 +9,9 @@ The team's project is comprised of 2 application.
 
 In the `starter` folder, you'll find 2 folders, one named `frontend` and one named `backend`, where each application's source code is maintained. Your job is to use the team's [existing documentation](./starter/frontend/frontend-development-notes) and create CI/CD pipelines to meet the teams' needs.
 
-# Deliverables
+### Deliverables
 
-## Frontend
+### Frontend
 
 1. A Continuous Integration workflow that:
    1. Runs on `pull_requests` against the `main` branch,only when code in the frontend application changes.
@@ -52,7 +52,7 @@ In the `starter` folder, you'll find 2 folders, one named `frontend` and one nam
 **⚠️ NOTE**
 Once you begin work on Continuous Deployment, you'll need to first setup the AWS and Kubernetes environment. Follow the [instructions below](#setting-up-continuous-deployment-environment)  instructions only when you're ready to start testing your deployments.
 
-## Setting up Continuous Deployment environment
+### Setting up Continuous Deployment environment
 
 Only complete these steps once you've finished your Continuous Integration pipelines for the frontend and backend applications. This section is meant to create a Kubernetes environment for you to deploy the applications to and verify the deployment step.
 
@@ -99,7 +99,7 @@ cd setup
 
 2. The script will download a tool, add the IAM user ARN to the authentication configuration, indicate a `Done` status, then it'll remove the tool
 
-## Dependencies
+### Dependencies
 
 Below is a list of dependencies to assist in the case you'd like to run any of the work locally. Local development issues, however, are not supported as we cannot control the environment as we can in the online workspace.
 
@@ -113,7 +113,7 @@ All of the tools below will be available in the workspace
 * [kustomize](https://kubectl.docs.kubernetes.io/installation/kustomize/) Used for building the Kubernetes manifests dynamically in the CI environment
 * [jq](https://stedolan.github.io/jq/download/) for parsing JSON more easily on the command line
 
-## Frontend Development notes
+### Frontend Development notes
 
 ### Running tests
 
@@ -272,7 +272,7 @@ kustomize edit set image frontend=<ECR_REPO_URL>:<NEW_TAG_HERE>
 kustomize build | kubectl apply -f -
 ```
 
-## Backend Development notes
+### Backend Development notes
 
 ### Running tests
 
@@ -407,6 +407,6 @@ kustomize edit set image backend=<ECR_REPO_URL>:<NEW_TAG_HERE>
 kustomize build | kubectl apply -f -
 ```
 
-## License
+### License
 
 [License](LICENSE.md)
