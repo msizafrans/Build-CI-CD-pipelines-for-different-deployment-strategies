@@ -96,18 +96,18 @@ jobs:
           docker build --build-arg=REACT_APP_MOVIE_API_URL="http://$REACT_APP_MOVIE_API_URL" -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
+      - name: Setup Authentication against EKS Cluster 
+        run: |
+          aws eks update-kubeconfig --name cluster --region us-east-1
+          kubectl get svc
+          kubectl config view
+
       - name: Run init.sh
         run:  |
           chmod +x init.sh 
           ./init.sh || true
           kubectl config view
         working-directory: setup
-      
-      - name: Setup Authentication against EKS Cluster 
-        run: |
-          aws eks update-kubeconfig --name cluster --region us-east-1
-          kubectl get svc
-          kubectl config view
           
       - name: Deploy the image to the cluster
         env:
